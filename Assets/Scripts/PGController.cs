@@ -39,7 +39,6 @@ public class PGController : MonoBehaviour
     void Update()
     {
         
-        
         int xVal = int.Parse(PosX.text);
         int yVal = int.Parse(PosY.text);
         int zVal = int.Parse(PosZ.text);
@@ -59,8 +58,18 @@ public class PGController : MonoBehaviour
     {
         GameObject currCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-        currCube.transform.position = currPosition;
+        currCube.transform.position = randomPosition();
         currCube.transform.rotation = Quaternion.Euler(currRotation);
         currCube.transform.localScale = currSize;
+    }
+    Vector3 randomPosition()
+    {
+        // Get the camera's viewport coordinates
+        Vector3 viewportPosition = new Vector3(Random.value, Random.value, Camera.main.nearClipPlane);
+
+        // Convert viewport coordinates to world coordinates
+        Vector3 worldPosition = Camera.main.ViewportToWorldPoint(viewportPosition);
+        
+        return worldPosition;
     }
 }

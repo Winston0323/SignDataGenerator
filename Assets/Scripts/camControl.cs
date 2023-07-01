@@ -13,6 +13,13 @@ public class camControl : MonoBehaviour
     public float scrollInput;
     public float scrollFactor = 10.0f;
 
+    public enum Mode
+    {
+        Normal,
+        Manual,
+        RandGen
+    }
+    public Mode currMode;
     //object creator
     public bool show;
     public float crtDist;
@@ -25,9 +32,24 @@ public class camControl : MonoBehaviour
 
     public string screenshotFileName = "screenshot";
     public Text ssText;
+
+    //main camera
+    public Camera cam;
+
+    //random generator
+    public GameObject randObj;
+    public InputField repeatTime;
+    public InputField distanceMin;
+    public InputField distanceMax;
+    public GameObject inputField;
+    public int repTime;
+    public bool repStart;
     // Start is called before the first frame update
     void Start()
     {
+        repeatTime.text = "10";
+        distanceMin.text = "5";
+        distanceMax.text = "20";
         Cursor.lockState = CursorLockMode.Locked;
         
         //object representor
@@ -37,12 +59,13 @@ public class camControl : MonoBehaviour
         crtrep.transform.position = location;
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
+        currMode = Mode.Normal;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
         //float mouseX = Input.GetAxis("Mouse X") * mouseSense * Time.deltaTime;
         float mouseX = Input.GetAxis("Mouse X") * mouseSense * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSense * Time.deltaTime;
@@ -55,10 +78,28 @@ public class camControl : MonoBehaviour
         // Get input from WSAD keys
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-
-        //object creator
-        if (show)
+        
+        if (Input.GetKeyDown(KeyCode.R))
         {
+            Cursor.lockState = CursorLockMode.None;
+            currMode = Mode.RandGen;
+            inputField.SetActive(true);
+            crtrep.SetActive(false);
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            currMode = Mode.Manual;
+            repeatTime.gameObject.SetActive(false);
+            randObj.SetActive(false);
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SaveScreenshot();
+        }
+        
+        if (currMode == Mode.Manual)//manual object creator mode
+        {
+            
             crtrep.SetActive(true);
             Vector3 crtPos = this.transform.position + crtDist * this.transform.forward;
             lineRenderer.SetPosition(0, this.transform.position + new Vector3(0, -1, 0));
@@ -78,29 +119,61 @@ public class camControl : MonoBehaviour
             if (Input.GetMouseButtonDown(0)) // check if the left mouse button is pressed down
             {
                 GameObject copyObject = Instantiate(prefab); // create a new instance of the object
-                copyObject.transform.position = crtrep.transform.position; // set the position of the copy to match the original
-                copyObject.transform.rotation = crtrep.transform.rotation; // set the rotation of the copy to match the original
+                copyObject.transform.position = randomPosition(); // set the position of the copy to match the original
+                copyObject.transform.rotation = randomRot(); // set the rotation of the copy to match the original
                 copyObject.transform.localScale = crtrep.transform.localScale; // set the scale of the copy to match the original
             }
-
         }
-        else {
+        else if (currMode == Mode.RandGen)
+        {//random data generator mode
+            
+            lineRenderer.SetPosition(1, this.transform.position + new Vector3(0, -1, 0));
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                repStart = true;
+                repTime = int.Parse(repeatTime.text);
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            if (repStart)
+            {
+                inputField.SetActive(false);
+                if (randObj == null)
+                {
+                    randObj = Instantiate(prefab);
+                }
+                else {
+                    randObj.SetActive(true);
+                }
+                randObj.transform.position = randomPosition(); // set the position of the copy to match the original
+                float distance = Vector3.Distance(randObj.transform.position, this.transform.position);
+                randObj.transform.rotation = randomRot(); // set the rotation of the copy to match the original
+                SaveScreenshotManual(distance, randObj.transform.rotation.eulerAngles);
+                repTime--;
+                Debug.Log(repTime);
+            }
+            else {
+                inputField.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
+            }
+
+            if (repTime <= 0)
+            {
+                repStart = false;
+            }
+        }
+        else
+        {//skybox viewer mode
+            if (randObj != null)
+            {
+                randObj.SetActive(false);
+            }
+            inputField.SetActive(false);
             crtrep.SetActive(false);
             lineRenderer.SetPosition(1, this.transform.position + new Vector3(0, -1, 0));
+        }
 
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // Take a screenshot
-            /*            string currentTimeString = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-                        string filePath = Application.dataPath + "/ScreenShot/" + screenshotFileName+ currentTimeString +".png";
-                        ScreenCapture.CaptureScreenshot(filePath);
-                        Debug.Log("Screenshot saved to: " + filePath);*/
-            SaveScreenshot();
-        }
-        if (Input.GetKeyDown(KeyCode.C)) {
-            show = !show;
-        }
+
+
+
 
     }
     void SaveScreenshot()
@@ -115,4 +188,40 @@ public class camControl : MonoBehaviour
         ScreenCapture.CaptureScreenshot(filePath);
         ssText.text = fileName + " saved to: " + filePath;
     }
+    void SaveScreenshotManual(float distance, Vector3 rot)
+    {
+        string folderPath = Application.dataPath + "/../Screenshots/";
+        if (!System.IO.Directory.Exists(folderPath))
+        {
+            System.IO.Directory.CreateDirectory(folderPath);
+        }
+        string fileName = "Screenshot_" + distance+ "_" + rot + ".png";
+        string filePath = folderPath + fileName;
+        Debug.Log(filePath);
+        ScreenCapture.CaptureScreenshot(filePath);
+        ssText.text = fileName + " saved to: " + filePath;
+    }
+    Vector3 randomPosition()
+    {
+        Camera cameraToUse = GetComponent<Camera>();
+        float randomX = UnityEngine.Random.Range(0.3f, 0.8f);
+        float randomY = UnityEngine.Random.Range(0.3f, 0.8f);
+        float randomZ = UnityEngine.Random.Range(float.Parse(distanceMin.text), float.Parse(distanceMax.text));
+        Debug.Log(int.Parse(distanceMin.text) +" "+ int.Parse(distanceMax.text));
+
+        Vector3 viewportPosition = new Vector3(randomX, randomY, randomZ);
+
+        // Convert viewport coordinates to world coordinates within the camera's viewing frustum
+        Vector3 worldPosition = cameraToUse.ViewportToWorldPoint(viewportPosition);
+
+        return worldPosition;
+    }
+    Quaternion randomRot() 
+    {
+        Vector3 rot = new Vector3(UnityEngine.Random.Range(-30f, 30f), UnityEngine.Random.Range(-60f, 60f), UnityEngine.Random.Range(-30f, 30f)); ;
+        Quaternion rotQ = Quaternion.Euler(rot);
+        return rotQ;
+    }
+    
+    
 }
