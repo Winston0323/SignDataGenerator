@@ -1,0 +1,7 @@
+Test 1000
+Train 2000
+Valid 1000
+Distance 5 20
+RotationX 0 0
+RotationY 0 0
+RotationZ 0 0

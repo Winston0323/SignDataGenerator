@@ -86,10 +86,15 @@ public class camControl : MonoBehaviour
     public GameObject leftUpField;
     public GameObject ScreenshotPrompt;
 
+    string configFolderPath = Path.Combine(Application.streamingAssetsPath, "config");
     public string randGenConfigPath = "RandomGeneratorPreset/";
+    [Header("-----Screen Properties-----")]
+    public int screenWidth;
+    public int screenHeight;
     // Start is called before the first frame update
     void Start()
     {
+        ResizeScreen(1920, 1080, true);
         PopulateConfigDropdownOptions();
         configDD.onValueChanged.AddListener(OnDropdownValueChanged);
         Cursor.lockState = CursorLockMode.Locked;
@@ -358,15 +363,15 @@ public class camControl : MonoBehaviour
         float height = result.y;
         float x = result.z;
         float y = Screen.height - result.w ;
-        string content = index.ToString() + " " + width + " " + height + " " + x + " " + y;
-        
+        string content = index.ToString() + " " + x + " " + y + " " + width + " " + height;
+
         if (normalize)
         {
             width = result.x / (float)Screen.width;
             height = result.y / (float)Screen.height;
             x = result.z / (float)Screen.width;
             y = 1 - (result.w  / (float)Screen.height);
-            content = index.ToString() + " " + width + " " + height + " " + x + " " + y;
+            content = index.ToString() + " " + x + " " + y + " " + width + " " + height ;
         }
 
         File.WriteAllText(fileNamePath, content);
@@ -447,57 +452,62 @@ public class camControl : MonoBehaviour
     void loadConfig(string fileName)
     {
         Debug.Log("Loading config");
-        TextAsset textAsset = Resources.Load<TextAsset>(randGenConfigPath + fileName);
-        if (textAsset != null)
+        StreamReader reader = new StreamReader(Path.Combine(configFolderPath, fileName));
+
+        string line;
+        while ((line = reader.ReadLine()) != null)
         {
-            string[] lines = textAsset.text.Split('\n');
-
-            foreach (string line in lines)
+            // Process each line here
+            Debug.Log(line);
+            string[] words = line.Split(' ');
+            switch (words[0])
             {
-                string[] words = line.Split(' ');
-                switch (words[0])
-                {
-                    case "Test":
-                        testNumField.text = words[1];
-                        break;
-                    case "Train":
-                        trainNumField.text = words[1];
-                        break;
-                    case "Valid":
-                        validNumField.text = words[1];
-                        break;
-                    case "Distance":
-                        distanceMin.text = words[1];
-                        distanceMax.text = words[2];
-                        break;
-                    case "RotationX":
-                        rotXmin.text = words[1];
-                        rotXmax.text = words[2];
-                        break;
-                    case "RotationY":
-                        rotYmin.text = words[1];
-                        rotYmax.text = words[2];
-                        break;
-                    case "RotationZ":
-                        rotZmin.text = words[1];
-                        rotZmax.text = words[2];
-                        break;
-                    case "Normalize":
-                        
-                        normalizeToggle.isOn = bool.Parse(words[1]);
-                        break;
-                    default:
-                        Debug.Log("Error key readed: \"" + words[0] + "\"");
-                        break;
-                }
+                case "Test":
+                    testNumField.text = words[1];
+                    break;
+                case "Train":
+                    trainNumField.text = words[1];
+                    break;
+                case "Valid":
+                    validNumField.text = words[1];
+                    break;
+                case "Distance":
+                    distanceMin.text = words[1];
+                    distanceMax.text = words[2];
+                    break;
+                case "RotationX":
+                    rotXmin.text = words[1];
+                    rotXmax.text = words[2];
+                    break;
+                case "RotationY":
+                    rotYmin.text = words[1];
+                    rotYmax.text = words[2];
+                    break;
+                case "RotationZ":
+                    rotZmin.text = words[1];
+                    rotZmax.text = words[2];
+                    break;
+                case "Normalize":
 
+                    normalizeToggle.isOn = bool.Parse(words[1]);
+                    break;
+                case "Screen":
+                    
+/*                    screenWidth = int.Parse(words[1]);
+                    screenHeight = int.Parse(words[2]);
+                    ResizeScreen(screenWidth, screenHeight);*/
+                    break;
+
+                default:
+                    Debug.Log("Error key readed: \"" + words[0] + "\"");
+                    break;
             }
         }
-        else
-        {
-            Debug.LogError("No Config file at" + randGenConfigPath + fileName);
-            return;
-        }
+
+        
+
+        
+        
         Debug.Log("Finish Loading");
     }
     void PopulateConfigDropdownOptions()
@@ -524,16 +534,19 @@ public class camControl : MonoBehaviour
     }
     public string[] getAllConfigName()
     {
+        //TextAsset[] resources = Resources.LoadAll<TextAsset>(randGenConfigPath);
         // Load all assets from the "Resources" folder and its subfolders
         //Object[] resources = Resources.LoadAll("");
-        TextAsset[] resources = Resources.LoadAll<TextAsset>(randGenConfigPath);
+        
+        string[] files = Directory.GetFiles(configFolderPath, "*.txt");
+        
         // Create an array to store the file names
-        string[] fileNames = new string[resources.Length];
+        string[] fileNames = new string[files.Length];
 
-        for (int i = 0; i < resources.Length; i++)
+        for (int i = 0; i < files.Length; i++)
         {
             // Get the name of each asset and store it in the fileNames array
-            fileNames[i] = resources[i].name;
+            fileNames[i] = Path.GetFileName(files[i]);
         }
 
         // Now you have all file names in the 'fileNames' array
@@ -552,5 +565,18 @@ public class camControl : MonoBehaviour
         // Display the status of the toggle
         Debug.Log("Toggle value change");
         normalize = isOn;
+    }
+    // Call this method to resize the screen
+    public void ResizeScreen(int screenWidth, int screenHeight, bool fullScreen)
+    {
+        // Change the screen resolution
+        Screen.SetResolution(screenWidth, screenHeight, fullScreen);
+
+        // Calculate the new aspect ratio
+        float targetAspect = (float)screenWidth / screenHeight;
+        cam.aspect = targetAspect;
+
+        // You might also want to handle UI scaling here if you have a canvas in your scene.
+        // Adjusting the canvas scaler's settings can help the UI elements fit the new resolution.
     }
 }
