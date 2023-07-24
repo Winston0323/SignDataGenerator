@@ -1,0 +1,3 @@
+47 E5-1a square 78 60
+48 r3-5a square 30 36
+49 r3-5a square 100 110
