@@ -78,8 +78,11 @@ public class camControl : MonoBehaviour
     public InputField rotYmax;
     public InputField rotZmin;
     public InputField rotZmax;
+    public InputField screenWidthIP;
+    public InputField screenHeightIP;
     public Dropdown configDD;
     public Toggle normalizeToggle;
+    public Button setScreenBtn;
     [Header("-----HUD-----")]
     public Canvas canvas;
     public GameObject inputField;
@@ -122,6 +125,7 @@ public class camControl : MonoBehaviour
             System.IO.Directory.CreateDirectory(folderPath);
         }
         normalizeToggle.onValueChanged.AddListener(OnToggleValueChanged);
+        setScreenBtn.onClick.AddListener(SetScreenBtn);
     }
 
     // Update is called once per frame
@@ -493,9 +497,11 @@ public class camControl : MonoBehaviour
                     break;
                 case "Screen":
                     
-/*                    screenWidth = int.Parse(words[1]);
+                    screenWidthIP.text = words[1];
+                    screenHeightIP.text = words[2];
+                    screenWidth = int.Parse(words[1]);
                     screenHeight = int.Parse(words[2]);
-                    ResizeScreen(screenWidth, screenHeight);*/
+                    ResizeScreen(screenWidth, screenHeight, false);
                     break;
 
                 default:
@@ -578,5 +584,11 @@ public class camControl : MonoBehaviour
 
         // You might also want to handle UI scaling here if you have a canvas in your scene.
         // Adjusting the canvas scaler's settings can help the UI elements fit the new resolution.
+    }
+    private void SetScreenBtn()
+    {
+        screenWidth = int.Parse(screenWidthIP.text);
+        screenHeight = int.Parse(screenHeightIP.text);
+        ResizeScreen(screenWidth, screenHeight, false);
     }
 }
