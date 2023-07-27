@@ -6,4 +6,4 @@ RotationX -30 30
 RotationY -45 45
 RotationZ -30 30
 Normalize True
-Screen 480 360
+Screen 1280 720

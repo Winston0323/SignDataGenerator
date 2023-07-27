@@ -142,6 +142,18 @@ public class camControl : MonoBehaviour
         {
             transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
             player.transform.Rotate(Vector3.up * mouseX);
+            if (Input.GetMouseButtonDown(1))
+            {
+                randObj.GetComponent<ParametricModifier>().randSign();
+            }
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                ManualModeInit();
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                DirectorModeInit();
+            }
         }
 
 
@@ -153,22 +165,12 @@ public class camControl : MonoBehaviour
         {
             RandCrtModeInit();
         }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            ManualModeInit();
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            DirectorModeInit();
-        }
+
         if (Input.GetKeyDown(KeyCode.S))
         {
             SaveScreenshot();
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            randObj.GetComponent<ParametricModifier>().randSign();
-        }
+
         if (currMode == Mode.Manual)//manual object creator mode
         {
             Vector3 crtPos = this.transform.position + crtDist * this.transform.forward;

@@ -5,7 +5,8 @@ public enum shapeType
 {
     square,
     circle,
-    triangle
+    triangle,
+    diamond
 }
 public class ParametricModifier : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class ParametricModifier : MonoBehaviour
     public Material mat;
     public GameObject square;
     public GameObject circle;
+    public GameObject triangle;
+    public GameObject diamond;
     public GameObject currShap;
     public int ID;
     private Dictionary<int, sign> signDict;
@@ -84,6 +87,19 @@ public class ParametricModifier : MonoBehaviour
     public void switchToID(int ID) {
         this.ID = ID;
         sign currSign = signDict[ID];
+        shapeType st = currSign.st;
+        switch (st) {
+            case shapeType.square:
+                currShap.SetActive(false);
+                currShap = square;
+                currShap.SetActive(true);
+                break;
+            case shapeType.diamond:
+                currShap.SetActive(false);
+                currShap = diamond;
+                currShap.SetActive(true);
+                break;
+        }
         setDementionInch(currSign.width, currSign.height);
         setTexture(currSign.texture);
     }
@@ -114,19 +130,22 @@ public class ParametricModifier : MonoBehaviour
     }
     public void loadDict() {
         TextAsset textAsset = Resources.Load<TextAsset>("SignDictionary"); // Replace "myFile" with your file name (without extension)
-
+        Debug.Log("Loading dictionary");
         if (textAsset != null)
         {
             string[] lines = textAsset.text.Split('\n');
 
             foreach (string line in lines)
             {
+                Debug.Log(line);
                 string[] words = line.Split(' ');
-                if (words.Length != 5) {
+                
+                if (words.Length < 5) {
+                    Debug.Log("Not enought dimension entered, you entered: " + words.Length);
                     return;
                 }
                 string IDstring = words[0];
-                //Debug.Log(IDstring);
+                Debug.Log(IDstring);
                 IDstring = IDstring.Trim();
                 int ID = int.Parse(IDstring);
                 string signName = words[1];
