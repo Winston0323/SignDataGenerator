@@ -6,6 +6,7 @@ public enum shapeType
     square,
     circle,
     triangle,
+    invTriangle,
     diamond
 }
 public class ParametricModifier : MonoBehaviour
@@ -17,6 +18,7 @@ public class ParametricModifier : MonoBehaviour
     public GameObject square;
     public GameObject circle;
     public GameObject triangle;
+    public GameObject invTriangle;
     public GameObject diamond;
     public GameObject currShap;
     public int ID;
@@ -97,6 +99,16 @@ public class ParametricModifier : MonoBehaviour
             case shapeType.diamond:
                 currShap.SetActive(false);
                 currShap = diamond;
+                currShap.SetActive(true);
+                break;
+            case shapeType.circle:
+                currShap.SetActive(false);
+                currShap = circle;
+                currShap.SetActive(true);
+                break;
+            case shapeType.invTriangle:
+                currShap.SetActive(false);
+                currShap = invTriangle;
                 currShap.SetActive(true);
                 break;
         }
