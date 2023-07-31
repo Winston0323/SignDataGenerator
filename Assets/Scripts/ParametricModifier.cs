@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 public enum shapeType
 {
@@ -23,7 +24,9 @@ public class ParametricModifier : MonoBehaviour
     public GameObject currShap;
     public int ID;
     private Dictionary<int, sign> signDict;
-    
+    string imagePath = Path.Combine(Application.streamingAssetsPath, "image");
+    string dictionaryPath = Path.Combine(Application.streamingAssetsPath, "SignDictionary.txt");
+
     //constants
     private string folderPath = "Signs/";
 
@@ -141,38 +144,41 @@ public class ParametricModifier : MonoBehaviour
         switchToID(randID);
     }
     public void loadDict() {
-        TextAsset textAsset = Resources.Load<TextAsset>("SignDictionary"); // Replace "myFile" with your file name (without extension)
         Debug.Log("Loading dictionary");
-        if (textAsset != null)
+        TextAsset textAsset = Resources.Load<TextAsset>("SignDictionary"); // Replace "myFile" with your file name (without extension)
+        StreamReader reader = new StreamReader(dictionaryPath);
+        string line;
+        while ((line = reader.ReadLine()) != null)
         {
-            string[] lines = textAsset.text.Split('\n');
-
-            foreach (string line in lines)
+            Debug.Log(line);
+            if (line.Length != 0 && line[0] == '#')
             {
-                Debug.Log(line);
-                string[] words = line.Split(' ');
-                
-                if (words.Length < 5) {
-                    Debug.Log("Not enought dimension entered, you entered: " + words.Length);
-                    return;
-                }
-                string IDstring = words[0];
-                Debug.Log(IDstring);
-                IDstring = IDstring.Trim();
-                int ID = int.Parse(IDstring);
-                string signName = words[1];
-                shapeType st;
-                System.Enum.TryParse(words[2], out st);
-                float width = float.Parse(words[3]);
-                float height = float.Parse(words[4]);
-                Texture2D texture = Resources.Load<Texture2D>(folderPath + signName);
-                sign newSign = new sign(ID, signName, st, width, height, texture);
-                signDict.Add(ID, newSign);
+                continue;
             }
-        }
-        else
-        {
-            Debug.LogError("Text file not found.");
-        }
+            
+            string[] words = line.Split(' ');
+
+            if (words.Length < 5)
+            {
+                Debug.Log("Not enought dimension entered, you entered: " + words.Length);
+                return;
+            }
+            string IDstring = words[0];
+
+            Debug.Log(IDstring);
+            IDstring = IDstring.Trim();
+            int ID = int.Parse(IDstring);
+            string signName = words[1];
+            shapeType st;
+            System.Enum.TryParse(words[2], out st);
+            float width = float.Parse(words[3]);
+            float height = float.Parse(words[4]);
+            //Texture2D texture = Resources.Load<Texture2D>(folderPath + signName);
+            byte[] pngBytes = System.IO.File.ReadAllBytes(Path.Combine(imagePath, signName + ".png"));
+            Texture2D texture = new Texture2D(2, 2);
+            texture.LoadImage(pngBytes);
+            sign newSign = new sign(ID, signName, st, width, height, texture);
+            signDict.Add(ID, newSign);
+        }  
     }
 }

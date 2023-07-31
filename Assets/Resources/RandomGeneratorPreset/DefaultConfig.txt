@@ -1,9 +1,0 @@
-Test 10
-Train 20
-Valid 10
-Distance 5 20
-RotationX -30 30
-RotationY -45 45
-RotationZ -30 30
-Normalize True
-Screen 480 360

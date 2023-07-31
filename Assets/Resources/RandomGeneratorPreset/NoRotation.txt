@@ -1,7 +1,0 @@
-Test 10
-Train 20
-Valid 10
-Distance 5 20
-RotationX 0 0
-RotationY 0 0
-RotationZ 0 0

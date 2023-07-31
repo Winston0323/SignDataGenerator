@@ -1,8 +1,0 @@
-Test 100
-Train 200
-Valid 100
-Distance 5 20
-RotationX -30 30
-RotationY -60 60
-RotationZ -30 30
-Normalize False
