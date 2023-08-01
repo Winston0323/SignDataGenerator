@@ -121,6 +121,9 @@ public class ParametricModifier : MonoBehaviour
     public int randomID() {
         List<int> keys = new List<int>(signDict.Keys);
         int randID;
+        if (keys.Count == 1) {
+            return keys[0];
+        }
         while (true)
         {
             // Get a random index
@@ -128,7 +131,7 @@ public class ParametricModifier : MonoBehaviour
 
             // Get the number at the random index
             randID = keys[randomIndex];
-
+            
             if (randID != this.ID)
             {
                 break;

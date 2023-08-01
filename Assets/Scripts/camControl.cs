@@ -422,24 +422,31 @@ public class camControl : MonoBehaviour
 
     Vector4 findBoundMesh(GameObject gameObj, Camera camera)
     {
+        //get the mesh data of object 
         Mesh mesh = gameObj.GetComponentInChildren<MeshFilter>().mesh;
-        Vector3[] vertices = mesh.vertices;
+        Vector3[] vertices = mesh.vertices;//getting vertices
+        //set min max record to max and min
         float minX = Mathf.Infinity, minY = Mathf.Infinity, maxX = -Mathf.Infinity, maxY = -Mathf.Infinity;
 
+        //looping through all verteices
         for (int i = 0; i < vertices.Length; i++)
         {
+            //vertices[i] = randObj.transform.localToWorldMatrix *  vertices[i]  ;
+            //transfrom the vertices into screen space
             Vector3 screenPoint = camera.WorldToScreenPoint(gameObj.transform.GetChild(0).transform.TransformPoint(vertices[i]));
-
+            //find minimum and maximum value on x and y directions
             if (screenPoint.x < minX) minX = screenPoint.x;
             if (screenPoint.y < minY) minY = screenPoint.y;
             if (screenPoint.x > maxX) maxX = screenPoint.x;
             if (screenPoint.y > maxY) maxY = screenPoint.y;
         }
-
+        //calculate width and height by minus the minimum from max
         float width = maxX - minX;
         float height = maxY - minY;
+        //calculate center from width and height
         float centerX = minX + width / 2.0f;
         float centerY = minY + height / 2.0f;
+        //return result
         return new Vector4(width, height, centerX, centerY);
     }
     void CreateMySprite(Vector3 position)
@@ -453,7 +460,7 @@ public class camControl : MonoBehaviour
 
         // Position the sprite at the given position
         newSprite.transform.position = position;
-        newSprite.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+        newSprite.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
     }
     void loadConfig(string fileName)
     {
