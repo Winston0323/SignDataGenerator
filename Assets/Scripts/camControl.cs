@@ -434,6 +434,7 @@ public class camControl : MonoBehaviour
             //vertices[i] = randObj.transform.localToWorldMatrix *  vertices[i]  ;
             //transfrom the vertices into screen space
             Vector3 screenPoint = camera.WorldToScreenPoint(gameObj.transform.GetChild(0).transform.TransformPoint(vertices[i]));
+            CreateMySprite(screenPoint);
             //find minimum and maximum value on x and y directions
             if (screenPoint.x < minX) minX = screenPoint.x;
             if (screenPoint.y < minY) minY = screenPoint.y;
@@ -460,7 +461,7 @@ public class camControl : MonoBehaviour
 
         // Position the sprite at the given position
         newSprite.transform.position = position;
-        newSprite.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        newSprite.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
     }
     void loadConfig(string fileName)
     {
