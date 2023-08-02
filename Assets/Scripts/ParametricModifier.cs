@@ -55,11 +55,6 @@ public class ParametricModifier : MonoBehaviour
         
         signDict = new Dictionary<int, sign>();
         loadDict();
-
-        currShap = square;
-        width = currShap.gameObject.transform.localScale.x;
-        height = currShap.gameObject.transform.localScale.y;
-
         randSign();
     }
 
@@ -93,28 +88,29 @@ public class ParametricModifier : MonoBehaviour
         this.ID = ID;
         sign currSign = signDict[ID];
         shapeType st = currSign.st;
+        if (currShap != null) {
+            currShap.SetActive(false);
+        }
         switch (st) {
             case shapeType.square:
-                currShap.SetActive(false);
+                
                 currShap = square;
-                currShap.SetActive(true);
+                
                 break;
             case shapeType.diamond:
-                currShap.SetActive(false);
+                
                 currShap = diamond;
-                currShap.SetActive(true);
+                
                 break;
             case shapeType.circle:
-                currShap.SetActive(false);
+                
                 currShap = circle;
-                currShap.SetActive(true);
                 break;
             case shapeType.invTriangle:
-                currShap.SetActive(false);
                 currShap = invTriangle;
-                currShap.SetActive(true);
                 break;
         }
+        currShap.SetActive(true);
         setDementionInch(currSign.width, currSign.height);
         setTexture(currSign.texture);
     }
@@ -183,5 +179,8 @@ public class ParametricModifier : MonoBehaviour
             sign newSign = new sign(ID, signName, st, width, height, texture);
             signDict.Add(ID, newSign);
         }  
+    }
+    public GameObject getCurrShape() {
+        return currShap;
     }
 }

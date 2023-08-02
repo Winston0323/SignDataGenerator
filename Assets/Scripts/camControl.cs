@@ -94,6 +94,8 @@ public class camControl : MonoBehaviour
     [Header("-----Screen Properties-----")]
     public int screenWidth;
     public int screenHeight;
+
+    public GameObject currShape;
     // Start is called before the first frame update
     void Start()
     {
@@ -221,7 +223,8 @@ public class camControl : MonoBehaviour
                     SaveScreenshotManualName(randObjDist, randObj.transform.rotation.eulerAngles, new Vector4(0, 0, 0, 0), "screenshot", currType.ToString(), "images");
 
                     //generate a bounding box
-                    result = findBoundMesh(randObj, cam);
+                    currShape = randObj.GetComponent<ParametricModifier>().getCurrShape();
+                    result = findBoundMesh(currShape, cam); 
                 }
                 else
                 {
@@ -422,18 +425,19 @@ public class camControl : MonoBehaviour
 
     Vector4 findBoundMesh(GameObject gameObj, Camera camera)
     {
+        
         //get the mesh data of object 
-        Mesh mesh = gameObj.GetComponentInChildren<MeshFilter>().mesh;
+        Mesh mesh = gameObj.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;//getting vertices
         //set min max record to max and min
         float minX = Mathf.Infinity, minY = Mathf.Infinity, maxX = -Mathf.Infinity, maxY = -Mathf.Infinity;
-
+        Debug.Log(vertices.Length);
         //looping through all verteices
         for (int i = 0; i < vertices.Length; i++)
         {
             //vertices[i] = randObj.transform.localToWorldMatrix *  vertices[i]  ;
             //transfrom the vertices into screen space
-            Vector3 screenPoint = camera.WorldToScreenPoint(gameObj.transform.GetChild(0).transform.TransformPoint(vertices[i]));
+            Vector3 screenPoint = camera.WorldToScreenPoint(gameObj.transform.TransformPoint(vertices[i]));
             CreateMySprite(screenPoint);
             //find minimum and maximum value on x and y directions
             if (screenPoint.x < minX) minX = screenPoint.x;
@@ -441,6 +445,7 @@ public class camControl : MonoBehaviour
             if (screenPoint.x > maxX) maxX = screenPoint.x;
             if (screenPoint.y > maxY) maxY = screenPoint.y;
         }
+        
         //calculate width and height by minus the minimum from max
         float width = maxX - minX;
         float height = maxY - minY;
