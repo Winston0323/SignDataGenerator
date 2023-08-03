@@ -105,7 +105,7 @@ public class camControl : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         //object representor
-        crtDist = 10.0f;
+        crtDist = 5.0f;
         //create objects
         crtrep = Instantiate(prefab);
         randObj = Instantiate(prefab);
