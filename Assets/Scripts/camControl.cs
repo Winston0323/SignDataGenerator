@@ -47,7 +47,7 @@ public class camControl : MonoBehaviour
     public Camera cam;
 
     [Header("-----Random Creator-----")]
-    private GameObject randObj;
+    public GameObject randObj;
     public float XLength;
     public float YLength;
     public Vector3 screenPos;
@@ -81,6 +81,7 @@ public class camControl : MonoBehaviour
     public InputField screenWidthIP;
     public InputField screenHeightIP;
     public Dropdown configDD;
+    public Dropdown signDD;
     public Toggle normalizeToggle;
     public Button setScreenBtn;
     [Header("-----HUD-----")]
@@ -99,6 +100,7 @@ public class camControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         ResizeScreen(1920, 1080, true);
         PopulateConfigDropdownOptions();
         configDD.onValueChanged.AddListener(OnDropdownValueChanged);
@@ -108,11 +110,14 @@ public class camControl : MonoBehaviour
         crtDist = 5.0f;
         //create objects
         crtrep = Instantiate(prefab);
-        randObj = Instantiate(prefab);
+        //randObj = Instantiate(prefab);
+
         //create a location
         Vector3 location = this.transform.position + crtDist * this.transform.forward;
         crtrep.transform.position = location;
         randObj.transform.position = location;
+
+
         faceCam(cam, randObj);
         randObj.transform.SetParent(cam.gameObject.transform);
         //render a line for manual mode

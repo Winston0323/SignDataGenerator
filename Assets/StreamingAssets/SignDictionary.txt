@@ -3,6 +3,7 @@
 26 R2-1-25 square 30 36
 #28 R2-1-35 square 30 36
 #30 R2-1-45 square 30 36
+35 R1-1 octa 36 36
 43 R1-2 invTriangle 36 36
 #47 E5-1a square 78 60
 #48 R3-5a square 30 36
