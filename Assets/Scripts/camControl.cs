@@ -84,6 +84,7 @@ public class camControl : MonoBehaviour
     public Dropdown signDD;
     public Toggle normalizeToggle;
     public Button setScreenBtn;
+    public Slider lightIntenseSlider;
     [Header("-----HUD-----")]
     public Canvas canvas;
     public GameObject inputField;
@@ -133,6 +134,8 @@ public class camControl : MonoBehaviour
         }
         normalizeToggle.onValueChanged.AddListener(OnToggleValueChanged);
         setScreenBtn.onClick.AddListener(SetScreenBtn);
+        lightIntenseSlider.onValueChanged.AddListener(HandleValueChanged);
+        lightIntenseSlider.value = randObj.GetComponentInChildren<Light>().intensity;
     }
 
     // Update is called once per frame
@@ -523,6 +526,11 @@ public class camControl : MonoBehaviour
                     screenHeight = int.Parse(words[2]);
                     ResizeScreen(screenWidth, screenHeight, false);
                     break;
+                case "LightIntensity":
+
+                    lightIntenseSlider.value = float.Parse(words[1]);
+                    //randObj.GetComponentInChildren<Light>().intensity = float.Parse(words[1]);
+                    break;
 
                 default:
                     Debug.Log("Error key readed: \"" + words[0] + "\"");
@@ -610,5 +618,11 @@ public class camControl : MonoBehaviour
         screenWidth = int.Parse(screenWidthIP.text);
         screenHeight = int.Parse(screenHeightIP.text);
         ResizeScreen(screenWidth, screenHeight, false);
+    }
+    public void HandleValueChanged(float value)
+    {
+        // This code will be executed whenever the slider value changes.
+        Debug.Log("Slider Value: " + value);
+        randObj.GetComponentInChildren<Light>().intensity = lightIntenseSlider.value;
     }
 }

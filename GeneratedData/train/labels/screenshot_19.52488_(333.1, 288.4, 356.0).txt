@@ -1,1 +1,0 @@
-49 NaN NaN -Infinity -Infinity

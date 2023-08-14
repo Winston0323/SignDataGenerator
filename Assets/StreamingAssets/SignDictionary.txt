@@ -1,11 +1,16 @@
 #1 W1-2Left diamond 36 36
+7 R4-7 square 36 48
 9 W4-1 diamond 36 36
+12 W11-2 diamond 36 36
+23 W3-3 diamond 36 36
 26 R2-1-25 square 30 36
-#28 R2-1-35 square 30 36
-#30 R2-1-45 square 30 36
+28 R2-1-35 square 30 36
+30 R2-1-45 square 30 36
 35 R1-1 octa 36 36
 43 R1-2 invTriangle 36 36
-#47 E5-1a square 78 60
-#48 R3-5a square 30 36
+47 E5-1a square 78 60
+48 R3-5a square 30 36
 49 W10-1 circle 36 36
+50 D9-7 square 24 24
+51 D9-8 square 24 24
 

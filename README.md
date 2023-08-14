@@ -30,15 +30,15 @@ Pick your favorate release, download it and run!!!
 </p>
 
 - enter prefer number inside input field on right corner
-- use right click to change sign
+- use right click to randomly changing a sign, and use the drop down menu to choose manually
 - use drop down to change preset configurations, you can create your own inside `skybox generator_data/StreamingAsssets/config`
 - you can create your own sign inside  `skybox generator_data/StreamingAsssets/SignDictionary.txt`, each line inside this txt file represent a sign, and the order is:
   ```sh
   IDNumber Name Shape Width Height
   ```
 - All shapes are provided in [Examples](#examples)
-- After you add your line of sign, you can put a png image inside `skybox generator_data/StreamingAsssets/image`、
-- Adding # at the front will ask the reader to escape current line
+- After you add your line of sign, you can put a png image inside `skybox generator_data/StreamingAsssets/image`
+- Adding # at the front will ask the dictionary reader to escape current line
 
 
 ### Data Structure format:
@@ -46,7 +46,7 @@ Pick your favorate release, download it and run!!!
 2. `GeneratedData` is divided into three folder: `test`, `train` and  `valid`. 
 3. These three folder are divided into `answer`, `image` and `label`
 4. `image` contains all training images
-5. `answer` contains all training images with red boxes indicating where is the bounding box of the target sign
+5. `answer` contains all training images with red boxes indicating where the bounding box of the target sign is
 6. `label` contains txt files which indicate the location and dimension of the target sign
  
 ### Examples:
@@ -68,4 +68,9 @@ Pick your favorate release, download it and run!!!
 #### Merging from right (diamond): 
 <p align="center">
   <img src="Samples/diamond.jpg" alt="Logo" width="480" height="270">
+</p>
+
+#### Stop Sign (octa): 
+<p align="center">
+  <img src="Samples/octa.jpg" alt="Logo" width="480" height="270">
 </p>

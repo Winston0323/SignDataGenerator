@@ -1,7 +1,8 @@
-Test 10
-Train 20
-Valid 10
+Test 100
+Train 600
+Valid 100
 Distance 5 20
 RotationX 0 0
 RotationY 0 0
 RotationZ 0 0
+LightIntensity 0.2

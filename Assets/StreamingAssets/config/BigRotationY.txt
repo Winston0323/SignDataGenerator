@@ -1,0 +1,7 @@
+Test 100
+Train 200
+Valid 100
+Distance 5 20
+RotationX -10 10
+RotationY 45 60
+RotationZ -10 10
