@@ -78,6 +78,8 @@ public class camControl : MonoBehaviour
     public InputField rotYmax;
     public InputField rotZmin;
     public InputField rotZmax;
+    public InputField lightIntensityMin;
+    public InputField lightIntensityMax;
     public InputField screenWidthIP;
     public InputField screenHeightIP;
     public Dropdown configDD;
@@ -134,8 +136,8 @@ public class camControl : MonoBehaviour
         }
         normalizeToggle.onValueChanged.AddListener(OnToggleValueChanged);
         setScreenBtn.onClick.AddListener(SetScreenBtn);
-        lightIntenseSlider.onValueChanged.AddListener(HandleValueChanged);
-        lightIntenseSlider.value = randObj.GetComponentInChildren<Light>().intensity;
+        //lightIntenseSlider.onValueChanged.AddListener(HandleValueChanged);
+        //lightIntenseSlider.value = randObj.GetComponentInChildren<Light>().intensity;
     }
 
     // Update is called once per frame
@@ -227,6 +229,7 @@ public class camControl : MonoBehaviour
                     randObjDist = Vector3.Distance(randObj.transform.position, this.transform.position);
                     faceCam(cam, randObj);//make it facing camera
                     randObj.transform.rotation = randObj.transform.rotation * randomRot(); // set the rotation of the copy to match the original
+                    randObj.GetComponentInChildren<Light>().intensity = randomLightIntensity();
                     hideHUD();
                     SaveScreenshotManualName(randObjDist, randObj.transform.rotation.eulerAngles, new Vector4(0, 0, 0, 0), "screenshot", currType.ToString(), "images");
 
@@ -430,7 +433,12 @@ public class camControl : MonoBehaviour
         Quaternion rotQ = Quaternion.Euler(rot);
         return rotQ;
     }
-
+    float randomLightIntensity() {
+        float lightIntMin = float.Parse(lightIntensityMin.text);
+        float lightIntMax = float.Parse(lightIntensityMax.text);
+        float result = UnityEngine.Random.Range(lightIntMin, lightIntMax);
+        return result;
+    }
     Vector4 findBoundMesh(GameObject gameObj, Camera camera)
     {
         
@@ -526,9 +534,11 @@ public class camControl : MonoBehaviour
                     screenHeight = int.Parse(words[2]);
                     ResizeScreen(screenWidth, screenHeight, false);
                     break;
-                case "LightIntensity":
+                case "Light":
 
-                    lightIntenseSlider.value = float.Parse(words[1]);
+                    lightIntensityMin.text = words[1];
+                    lightIntensityMax.text = words[2];
+                    //lightIntenseSlider.value = float.Parse(words[2]);
                     //randObj.GetComponentInChildren<Light>().intensity = float.Parse(words[1]);
                     break;
 

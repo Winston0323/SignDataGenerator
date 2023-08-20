@@ -6,4 +6,5 @@ RotationX -30 30
 RotationY -45 45
 RotationZ -30 30
 Normalize True
+Light 0.2 1
 Screen 1280 720

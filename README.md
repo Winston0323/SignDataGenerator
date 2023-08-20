@@ -34,9 +34,9 @@ Pick your favorate release, download it and run!!!
 - use drop down to change preset configurations, you can create your own inside `skybox generator_data/StreamingAsssets/config`
 - you can create your own sign inside  `skybox generator_data/StreamingAsssets/SignDictionary.txt`, each line inside this txt file represent a sign, and the order is:
   ```sh
-  IDNumber Name Shape Width Height
+  IDNumber Name shapesTypes Width Height
   ```
-- All shapes are provided in [Examples](#examples)
+- All shapesTypes are provided in [Examples](#examples)
 - After you add your line of sign, you can put a png image inside `skybox generator_data/StreamingAsssets/image`
 - Adding # at the front will ask the dictionary reader to escape current line
 
@@ -48,7 +48,21 @@ Pick your favorate release, download it and run!!!
 4. `image` contains all training images
 5. `answer` contains all training images with red boxes indicating where the bounding box of the target sign is
 6. `label` contains txt files which indicate the location and dimension of the target sign
- 
+### Config file format: 
+- `Test` : number of test pictures
+- `Train` : number of train pictures
+- `Valid` : number of valid pictures
+- `Distance` : range of distance of the sign from the camera, unit is meter 
+- `RotationX` : range of rotation on X axis, unit is degree
+- `RotationY` : range of rotation on Y axis, unit is degree
+- `RotationZ` : range of rotation on Z axis, unit is degree
+- `Normalize` : number in text label is normalize or not, value is `True/False`
+- `Light` : range of light intensity of the sign, value is float from `0 ~ 1`
+- `Screen` : width and height of the screen, unit is pixel
+<p align="center">
+  <img src="Samples/configSample.png" alt="Logo" width="241" height="308">
+</p>
+If you do not include the `keywords` inside config, the value at input file will be left as empty after loading that file.
 ### Examples:
 #### Yield (invTriangle): 
 <p align="center">
