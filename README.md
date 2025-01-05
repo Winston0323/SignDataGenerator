@@ -10,18 +10,18 @@ Pick your favorate release, download it and run!!!
   <img src="gifs/DirectorMode.gif" alt="Logo" width="480" height="270">
 </p>
 
-- press w to move to next skybox
-- press d to move back to last one
-
+- Place your skybox panorama under `Skybox generator_data/StreamingAsssets/config`
+- Press w to move to next skybox
+- Press d to move back to last one
 
 ## (2)Manual Mode(Press M): Manually create sign at specific location
 <p align="center">
   <img src="gifs/ManualMode.gif" alt="Logo" width="480" height="270">
 </p>
 
-- use mouse scroller to move sign back and forward
-- use mouse to aim at specific location
-- press left key to create at specific location 
+- Use mouse scroller to move sign back and forward
+- Use mouse to aim at specific location
+- Press left key to create at specific location 
 
 
 ## (3)Random Generator Mode(Press R): Random generating dataset
@@ -29,15 +29,15 @@ Pick your favorate release, download it and run!!!
   <img src="Samples/square.jpg" alt="Logo" width="480" height="270">
 </p>
 
-- enter prefer number inside input field on right corner
-- use right click to randomly changing a sign, and use the drop down menu to choose manually
-- use drop down to change preset configurations, you can create your own inside `skybox generator_data/StreamingAsssets/config`
-- you can create your own sign inside  `skybox generator_data/StreamingAsssets/SignDictionary.txt`, each line inside this txt file represent a sign, and the order is:
+- Enter prefer number inside input field on right corner
+- Use right click to randomly changing a sign, and use the drop down menu to choose manually
+- Use drop down to change preset configurations, you can create your own inside `Skybox generator_data/StreamingAsssets/config`
+- You can create your own sign inside  `skybox generator_data/StreamingAsssets/SignDictionary.txt`, each line inside this txt file represent a sign, and the order is:
   ```sh
   IDNumber Name shapesTypes Width Height
   ```
 - All shapesTypes are provided in [Examples](#examples)
-- After you add your line of sign, you can put a png image inside `skybox generator_data/StreamingAsssets/image`
+- After you add your line of sign, you can put a png image inside `Skybox generator_data/StreamingAsssets/image`
 - Adding # at the front will ask the dictionary reader to escape current line
 
 

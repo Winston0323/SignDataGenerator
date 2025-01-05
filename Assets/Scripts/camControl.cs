@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.IO;
+using UnityEditor;
+using UnityEngine.Rendering;
 public enum Mode
 {
     Director,
@@ -46,7 +48,7 @@ public class camControl : MonoBehaviour
     [Header("-----Target camera-----")]
     public Camera cam;
 
-    [Header("-----Random Creator-----")]
+    [Header("-----Random Object Creator-----")]
     public GameObject randObj;
     public float XLength;
     public float YLength;
@@ -59,10 +61,13 @@ public class camControl : MonoBehaviour
     private int currIter;
     private folderType currType;
     public bool normalize;
+    public GameObject currShape;
+
     [Header("-----bounding box-----")]
     public bool repStart;
-    public Image sltBox;
-    public Sprite point;
+    public BoundingBoxManager randObjBBM;
+/*  public Image sltBox;
+    public Sprite point;*/
     public Vector4 result;
     public float randObjDist;
 
@@ -94,16 +99,19 @@ public class camControl : MonoBehaviour
     public GameObject ScreenshotPrompt;
 
     string configFolderPath = Path.Combine(Application.streamingAssetsPath, "config");
+    string skyboxPanoramaFolderPath = Path.Combine(Application.streamingAssetsPath, "Skybox");
     public string randGenConfigPath = "RandomGeneratorPreset/";
     [Header("-----Screen Properties-----")]
     public int screenWidth;
     public int screenHeight;
 
-    public GameObject currShape;
+    [Header("-----Skybox-----")]
+    public GameObject skyboxManager;
     // Start is called before the first frame update
     void Start()
     {
-
+        CreateSkybox();
+        randObjBBM = this.gameObject.GetComponent<BoundingBoxManager>();
         ResizeScreen(1920, 1080, true);
         PopulateConfigDropdownOptions();
         configDD.onValueChanged.AddListener(OnDropdownValueChanged);
@@ -216,6 +224,7 @@ public class camControl : MonoBehaviour
                 if (randObj == null)
                 {
                     randObj = Instantiate(prefab);
+                    
                 }
                 else
                 {
@@ -223,7 +232,8 @@ public class camControl : MonoBehaviour
                 }
                 if (!bbTurn)
                 {
-                    sltBox.gameObject.SetActive(false);
+                    //sltBox.gameObject.SetActive(false);
+                    randObjBBM.hideBox();
                     //generate random position and rotation
                     randObj.transform.position = randomPosition(); // set the position of the copy to match the original
                     randObjDist = Vector3.Distance(randObj.transform.position, this.transform.position);
@@ -235,15 +245,17 @@ public class camControl : MonoBehaviour
 
                     //generate a bounding box
                     currShape = randObj.GetComponent<ParametricModifier>().getCurrShape();
-                    result = findBoundMesh(currShape, cam); 
+                    result = randObjBBM.findBoundMesh(currShape, cam);
+                    result = randObjBBM.result;
                 }
                 else
                 {
-                    sltBox.gameObject.SetActive(true);
-                    RectTransform rectTransform = sltBox.GetComponent<RectTransform>();
-                    rectTransform.sizeDelta = new Vector2(result.x, result.y);
-                    //screenPos.z = 0;
-                    rectTransform.position = new Vector2(result.z, result.w);
+                    randObjBBM.showbox();
+                    randObjBBM.updateLocation();
+                    //sltBox.gameObject.SetActive(true);
+                    //RectTransform rectTransform = sltBox.GetComponent<RectTransform>();
+                    //rectTransform.sizeDelta = new Vector2(result.x, result.y);
+                    //rectTransform.position = new Vector2(result.z, result.w);
 
                     XLength = result.x;
                     YLength = result.y;
@@ -326,17 +338,24 @@ public class camControl : MonoBehaviour
         currMode = Mode.Manual;
         inputField.SetActive(false);
         randObj.SetActive(false);
-        sltBox.gameObject.SetActive(false);
+        //sltBox.gameObject.SetActive(false);
+        randObjBBM.hideBox();
         crtrep.SetActive(true);
     }
     void DirectorModeInit()
     {
         currMode = Mode.Director;
-        sltBox.gameObject.SetActive(false);
+        //sltBox.gameObject.SetActive(false);
+        if (randObjBBM) {
+            randObjBBM.hideBox();
+        }
         randObj.SetActive(false);
         inputField.SetActive(false);
         crtrep.SetActive(false);
-        lineRenderer.SetPosition(1, this.transform.position + new Vector3(0, -1, 0));
+        if (lineRenderer != null)
+        {
+            lineRenderer.SetPosition(1, this.transform.position + new Vector3(0, -1, 0));
+        }
     }
     void SaveScreenshot()
     {
@@ -438,51 +457,6 @@ public class camControl : MonoBehaviour
         float lightIntMax = float.Parse(lightIntensityMax.text);
         float result = UnityEngine.Random.Range(lightIntMin, lightIntMax);
         return result;
-    }
-    Vector4 findBoundMesh(GameObject gameObj, Camera camera)
-    {
-        
-        //get the mesh data of object 
-        Mesh mesh = gameObj.GetComponent<MeshFilter>().mesh;
-        Vector3[] vertices = mesh.vertices;//getting vertices
-        //set min max record to max and min
-        float minX = Mathf.Infinity, minY = Mathf.Infinity, maxX = -Mathf.Infinity, maxY = -Mathf.Infinity;
-        Debug.Log(vertices.Length);
-        //looping through all verteices
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            //vertices[i] = randObj.transform.localToWorldMatrix *  vertices[i]  ;
-            //transfrom the vertices into screen space
-            Vector3 screenPoint = camera.WorldToScreenPoint(gameObj.transform.TransformPoint(vertices[i]));
-            CreateMySprite(screenPoint);
-            //find minimum and maximum value on x and y directions
-            if (screenPoint.x < minX) minX = screenPoint.x;
-            if (screenPoint.y < minY) minY = screenPoint.y;
-            if (screenPoint.x > maxX) maxX = screenPoint.x;
-            if (screenPoint.y > maxY) maxY = screenPoint.y;
-        }
-        
-        //calculate width and height by minus the minimum from max
-        float width = maxX - minX;
-        float height = maxY - minY;
-        //calculate center from width and height
-        float centerX = minX + width / 2.0f;
-        float centerY = minY + height / 2.0f;
-        //return result
-        return new Vector4(width, height, centerX, centerY);
-    }
-    void CreateMySprite(Vector3 position)
-    {
-        // Create a new empty GameObject
-        GameObject newSprite = new GameObject("My Sprite");
-
-        // Add the SpriteRenderer component and assign the sprite
-        SpriteRenderer renderer = newSprite.AddComponent<SpriteRenderer>();
-        renderer.sprite = point;
-
-        // Position the sprite at the given position
-        newSprite.transform.position = position;
-        newSprite.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
     }
     void loadConfig(string fileName)
     {
@@ -634,5 +608,22 @@ public class camControl : MonoBehaviour
         // This code will be executed whenever the slider value changes.
         Debug.Log("Slider Value: " + value);
         randObj.GetComponentInChildren<Light>().intensity = lightIntenseSlider.value;
+    }
+
+    public void CreateSkybox()
+    {
+        string[] imagePaths = Directory.GetFiles(skyboxPanoramaFolderPath, "*.jpg");
+
+        foreach (string imagePath in imagePaths)
+        {
+            string normalized_path = imagePath.Replace('\\', '/');
+            byte[] fileData = System.IO.File.ReadAllBytes(normalized_path);
+            Texture2D tex = new Texture2D(2048, 1024);
+            tex.LoadImage(fileData);
+            Debug.Log(normalized_path);
+            Material skyboxMaterial = new Material(Shader.Find("Skybox/Panoramic"));
+            skyboxMaterial.SetTexture("_MainTex", tex);
+            skyboxManager.GetComponent<SkyboxController>().addSkybox(skyboxMaterial);
+        }
     }
 }

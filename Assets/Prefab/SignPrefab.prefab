@@ -75,7 +75,6 @@ MonoBehaviour:
   diamond: {fileID: 8261191678700431067}
   octa: {fileID: 7089763567261159997}
   currShap: {fileID: 0}
-  signOptions: []
   signDD: {fileID: 0}
   ID: 0
 --- !u!1 &5453113483957572948

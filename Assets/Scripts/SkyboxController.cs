@@ -8,14 +8,15 @@ using System.Linq;
 public class SkyboxController : MonoBehaviour
 {
     public string materialFolder;
-    private Material[] skyboxes;
+    private List<Material> skyboxes;
     public int sbIndex = 0;
     public Text frameIndex;
     public int arraySize;
     // Start is called before the first frame update
     void Start()
     {
-        skyboxes = Resources.LoadAll<Material>("Road");
+        //skyboxes = Resources.LoadAll<Material>("Skybox");
+        skyboxes = new List<Material>();
     }
 
     // Update is called once per frame
@@ -24,7 +25,7 @@ public class SkyboxController : MonoBehaviour
         //
         if (Input.GetKeyDown(KeyCode.W))
         {
-            if (sbIndex < skyboxes.Length - 1)  sbIndex += 1;
+            if (sbIndex < skyboxes.Count - 1)  sbIndex += 1;
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
@@ -32,6 +33,9 @@ public class SkyboxController : MonoBehaviour
         }
         RenderSettings.skybox = skyboxes[sbIndex];
         frameIndex.text = "Frame: " + sbIndex.ToString();
-        arraySize = skyboxes.Length;
+        arraySize = skyboxes.Count;
+    }
+    public void addSkybox(Material skybox) {
+        skyboxes.Add(skybox);
     }
 }

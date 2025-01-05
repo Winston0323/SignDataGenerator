@@ -8,6 +8,7 @@ public class SkyboxCreator : MonoBehaviour
 {
     public string basePath;
     public string ImageTexturePath = "Assets/Resources/SkyboxTex";
+    string skyboxPanoramaFolderPath = "Assets\\StreamingAssets\\Skybox";
     public string[] folderNames;
 
     void Start()
