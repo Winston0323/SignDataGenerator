@@ -63,7 +63,9 @@ Pick your favorate release, download it and run!!!
   <img src="Samples/configSample.png" alt="Logo" width="241" height="308">
 </p>
 If you do not include the `keywords` inside config, the value at input file will be left as empty after loading that file.
+
 ### Examples:
+
 #### Yield (invTriangle): 
 <p align="center">
   <img src="Samples/triangle.jpg" alt="Logo" width="480" height="270">
