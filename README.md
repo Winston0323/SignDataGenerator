@@ -10,7 +10,7 @@ Pick your favorate release, download it and run!!!
   <img src="gifs/DirectorMode.gif" alt="Logo" width="480" height="270">
 </p>
 
-- Place your skybox panorama under `Skybox generator_data/StreamingAsssets/config`
+- Place your skybox panorama under `Skybox generator_data/StreamingAsssets/Skybox`
 - Press w to move to next skybox
 - Press d to move back to last one
 
