@@ -51,7 +51,7 @@ public class BoundingBoxManager : MonoBehaviour
         {
             //transfrom the vertices into screen space
             Vector3 screenPoint = camera.WorldToScreenPoint(gameObj.transform.TransformPoint(vertices[i]));
-            CreateMySprite(screenPoint);
+            //CreateMySprite(screenPoint);
             //find minimum and maximum value on x and y directions
             if (screenPoint.x < minX) minX = screenPoint.x;
             if (screenPoint.y < minY) minY = screenPoint.y;
